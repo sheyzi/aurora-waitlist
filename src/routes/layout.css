@@ -1,0 +1,142 @@
+@import 'tailwindcss';
+
+@font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('/fonts/cabinet-grotesk/CabinetGrotesk-Variable.woff2') format('woff2-variations'),
+         url('/fonts/cabinet-grotesk/CabinetGrotesk-Variable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('/fonts/cabinet-grotesk/CabinetGrotesk-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('/fonts/cabinet-grotesk/CabinetGrotesk-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('/fonts/cabinet-grotesk/CabinetGrotesk-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cabinet Grotesk';
+    src: url('/fonts/cabinet-grotesk/CabinetGrotesk-Extrabold.woff2') format('woff2');
+    font-weight: 800;
+    font-display: swap;
+    font-style: normal;
+}
+
+@theme {
+    --font-sans: 'Cabinet Grotesk', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Cabinet Grotesk', -apple-system, sans-serif;
+    --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+    --color-background: #FAF8F5;
+    --color-surface: #FFFFFF;
+    --color-ink: #0E0E11;
+    --color-muted: #5A5A60;
+    --color-subtle: #8A8A90;
+    --color-line: #E2E2DF;
+}
+
+@layer base {
+    html {
+        background-color: var(--color-background);
+    }
+    body {
+        background-color: var(--color-background);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Full-viewport heights that stay behind iOS dynamic chrome.
+   lvh is stable like vh (no resize jumps like dvh) but always spans
+   the large viewport, including behind the toolbar and status bar.
+   The plain vh/lvh order is a deliberate fallback cascade. */
+.hero-viewport {
+    min-height: 100vh;
+    min-height: 100lvh;
+}
+
+.hero-stage-viewport {
+    height: 130vh;
+    height: 130lvh;
+}
+
+.font-serif {
+    font-family: 'Cabinet Grotesk', -apple-system, sans-serif;
+}
+
+.font-sans {
+    font-family: 'Cabinet Grotesk', 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-display {
+    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+}
+
+.font-mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+
+/* Day-photo settle: subtle scale under the Svelte cross-dissolve.
+   Runs on the incoming layer only (fresh mount); the outgoing layer
+   keeps its final state while fading out. */
+.photo-settle {
+    animation: photo-settle 0.7s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .photo-settle {
+        animation: none;
+    }
+}
+
+@keyframes photo-settle {
+    from {
+        transform: scale(1.03);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes marquee-scroll {
+    from {
+        transform: translateX(0%);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    animation: marquee-scroll 42s linear infinite;
+}
+
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
