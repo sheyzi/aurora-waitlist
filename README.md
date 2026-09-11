@@ -12,7 +12,7 @@ Below that, curated trips open as journey chapters. Each chapter (`TripCard.svel
 
 A marquee follows with press quotes and trip telemetry. Then How It Works replays the Santorini trip as a live example (voice note, matched stay, pacing, Day 1 snippet). The page ends with a closing waitlist pavilion carrying a 30-day countdown stored in localStorage, and a studio footer.
 
-The waitlist form posts to `/api/waitlist`. It checks the address format, keeps entries in a memory set, and returns a short message for new and repeat signups. One shared `WaitlistForm.svelte` powers both the hero and the closing pavilion.
+The waitlist form runs fully client-side with no server. It validates the address format, keeps entries in a `localStorage` set, and confirms new and repeat signups instantly. One shared `WaitlistForm.svelte` powers both the hero and the closing pavilion.
 
 ## Demo
 
@@ -42,7 +42,7 @@ bun run lint
 
 ## How it is built
 
-SvelteKit 2 with Svelte 5 runes, Tailwind CSS 4 through the Vite plugin, GSAP ScrollTrigger for entrance and scrubbed exits, and Lenis for smooth wheel scroll on desktop. Touch devices use native scroll. TypeScript, ESLint, and Prettier are set up as the `sv` minimal template leaves them.
+SvelteKit 2 with Svelte 5 runes, Tailwind CSS 4 through the Vite plugin, GSAP ScrollTrigger for entrance and scrubbed exits, and Lenis for smooth wheel scroll on desktop. Touch devices use native scroll. The site is fully static via `@sveltejs/adapter-static`: `bun run build` emits plain files to `build/`, servable from any static host. TypeScript, ESLint, and Prettier are set up as the `sv` minimal template leaves them.
 
 Page flow lives in `src/routes/+page.svelte`. It starts Lenis, registers ScrollTrigger, runs the entrance timeline, owns the countdown timer (skips ticks while the tab is hidden), drives the trip scroll-spy, and handles scroll-to-section plus waitlist focus. The bottom waitlist input owns `id="waitlist-email"`; nav and How It Works calls-to-action scroll down to it, while the hero keeps its own inline form.
 
@@ -68,8 +68,8 @@ Motion stays restrained. Entrance uses short back eases. Scroll exits fade plate
 
 ## Roadmap
 
-- Store waitlist emails in a database instead of memory
-- Add rate limiting and basic spam checks to the API route
+- Point the waitlist form at a real endpoint (API route, Formspree, or similar) instead of local demo storage
+- Add rate limiting and basic spam checks when a server endpoint exists
 - Add Open Graph image and metadata for sharing
 - Add tests for email validation and countdown logic
 

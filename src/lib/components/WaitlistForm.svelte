@@ -21,27 +21,47 @@
 	const errorId = $derived(`${inputId}-error`);
 	const successId = $derived(`${inputId}-success`);
 
-	async function handleSubmit(e: SubmitEvent) {
+	// Static demo mode: no server, so entries live in localStorage only.
+	const STORAGE_KEY = 'aurora_waitlist';
+	const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+	function readStored(): Set<string> {
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY);
+			const parsed: unknown = raw ? JSON.parse(raw) : [];
+			return new Set(Array.isArray(parsed) ? parsed.filter((v) => typeof v === 'string') : []);
+		} catch {
+			return new Set();
+		}
+	}
+
+	function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
-		if (!email.trim() || isSubmitting) return;
+		if (isSubmitting) return;
+
+		const address = email.trim().toLowerCase();
+		if (!address) return;
 
 		isSubmitting = true;
 		errorMessage = '';
 
+		if (!EMAIL_REGEX.test(address)) {
+			errorMessage = 'Please enter a valid email address.';
+			isSubmitting = false;
+			return;
+		}
+
 		try {
-			const res = await fetch('/api/waitlist', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email: email.trim() })
-			});
-			const data = await res.json();
-			if (res.ok && data.success) {
-				successMessage = data.message || "You're on the list — check your inbox.";
+			const stored = readStored();
+			if (stored.has(address)) {
+				successMessage = "You're already on the list — we'll be in touch.";
 			} else {
-				errorMessage = data.message || 'Something went wrong. Please try again.';
+				stored.add(address);
+				localStorage.setItem(STORAGE_KEY, JSON.stringify([...stored]));
+				successMessage = "You're on the list — check your inbox.";
 			}
 		} catch {
-			errorMessage = 'Network error. Please check your connection and try again.';
+			errorMessage = 'Could not save your email in this browser. Please try again.';
 		} finally {
 			isSubmitting = false;
 		}
